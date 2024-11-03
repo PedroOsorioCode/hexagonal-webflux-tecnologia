@@ -5,6 +5,7 @@ import com.microservicio.hxtecnologia.domain.model.TecnologiaModel;
 import com.microservicio.hxtecnologia.domain.serviceprovider.ITecnologiaPersistencePort;
 import com.microservicio.hxtecnologia.domain.usecase.ITecnologiaUseCasePort;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @UseCase
@@ -19,5 +20,10 @@ public class TecnologiaUseCase implements ITecnologiaUseCasePort {
     @Override
     public Mono<Boolean> existePorNombre(String nombre) {
         return tecnologiaPersistencePort.existePorNombre(nombre);
+    }
+
+    @Override
+    public Flux<TecnologiaModel> consultarTodosPaginado() {
+        return tecnologiaPersistencePort.consultarTodos();
     }
 }

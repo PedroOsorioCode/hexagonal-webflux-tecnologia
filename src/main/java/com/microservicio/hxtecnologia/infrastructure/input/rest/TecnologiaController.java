@@ -1,7 +1,9 @@
 package com.microservicio.hxtecnologia.infrastructure.input.rest;
 
+import com.microservicio.hxtecnologia.application.dto.request.TecnologiaFilterRequestDto;
 import com.microservicio.hxtecnologia.application.dto.request.TecnologiaRequestDto;
-import com.microservicio.hxtecnologia.application.dto.request.TecnologiaResponseDto;
+import com.microservicio.hxtecnologia.application.dto.response.TecnologiaPaginacionResponseDto;
+import com.microservicio.hxtecnologia.application.dto.response.TecnologiaResponseDto;
 import com.microservicio.hxtecnologia.application.service.ITecnologiaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -35,6 +37,19 @@ public class TecnologiaController {
     @PostMapping
     public Mono<ResponseEntity<TecnologiaResponseDto>> guardar(@RequestBody Mono<TecnologiaRequestDto> tecnologiaRequestDto) {
         return tecnologiaService.guardar(tecnologiaRequestDto)
+                .map(tecnologiaModel -> ResponseEntity.ok(tecnologiaModel))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "Permite consultas las tecnologias ordenadas por nombre y paginadas")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Informacion tecnologias", content = @Content),
+            @ApiResponse(responseCode = "409", description = "Inconsistencia en la información", content = @Content)
+    })
+    @PostMapping("/listar")
+    public Mono<ResponseEntity<TecnologiaPaginacionResponseDto<TecnologiaResponseDto>>> consultarTodos(
+            @RequestBody Mono<TecnologiaFilterRequestDto> filter) {
+        return tecnologiaService.consultarTodosPaginado(filter)
                 .map(tecnologiaModel -> ResponseEntity.ok(tecnologiaModel))
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }

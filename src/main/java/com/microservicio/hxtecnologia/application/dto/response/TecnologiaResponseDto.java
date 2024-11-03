@@ -1,4 +1,4 @@
-package com.microservicio.hxtecnologia.application.dto.request;
+package com.microservicio.hxtecnologia.application.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

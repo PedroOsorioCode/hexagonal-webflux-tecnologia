@@ -6,6 +6,7 @@ import com.microservicio.hxtecnologia.domain.serviceprovider.ITecnologiaPersiste
 import com.microservicio.hxtecnologia.infrastructure.out.r2dbc.mapper.ITecnologiaEntityMapper;
 import com.microservicio.hxtecnologia.infrastructure.out.r2dbc.repository.TecnologiaRepository;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @PersistenceAdapter
@@ -22,5 +23,10 @@ public class TecnologiaR2dbcAdapter implements ITecnologiaPersistencePort {
     @Override
     public Mono<Boolean> existePorNombre(String nombre) {
         return tecnologiaRepository.findByNombre(nombre).hasElement();
+    }
+
+    @Override
+    public Flux<TecnologiaModel> consultarTodos() {
+        return tecnologiaRepository.findAll().map(tecnologiaEntityMapper::toModelFronEntity);
     }
 }

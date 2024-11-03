@@ -2,8 +2,10 @@ package com.microservicio.hxtecnologia.application.service;
 
 import com.microservicio.hxtecnologia.application.common.ConstantesAplicacion;
 import com.microservicio.hxtecnologia.application.common.MensajeError;
+import com.microservicio.hxtecnologia.application.dto.request.TecnologiaFilterRequestDto;
 import com.microservicio.hxtecnologia.application.dto.request.TecnologiaRequestDto;
-import com.microservicio.hxtecnologia.application.dto.request.TecnologiaResponseDto;
+import com.microservicio.hxtecnologia.application.dto.response.TecnologiaPaginacionResponseDto;
+import com.microservicio.hxtecnologia.application.dto.response.TecnologiaResponseDto;
 import com.microservicio.hxtecnologia.application.mapper.ITecnologiaModelMapper;
 import com.microservicio.hxtecnologia.application.service.impl.TecnologiaService;
 import com.microservicio.hxtecnologia.domain.model.TecnologiaModel;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -136,6 +139,39 @@ public class TecnologiaServiceTest {
 
         StepVerifier.create(responseMono)
                 .expectNextMatches(response -> response instanceof TecnologiaResponseDto)
+                .verifyComplete();
+    }
+
+    @Test
+    void consultarTodosPaginadoTest() {
+        // Configurar datos de prueba
+        TecnologiaFilterRequestDto filterRequest = new TecnologiaFilterRequestDto();
+        filterRequest.setDireccionOrdenamiento("asc");
+        filterRequest.setNumeroPagina(0);
+        filterRequest.setTamanoPorPagina(2);
+
+        TecnologiaModel tecnologia1 = new TecnologiaModel(1L, "Java", "a");
+        TecnologiaModel tecnologia2 = new TecnologiaModel(2L, "Python", "b");
+        TecnologiaResponseDto dto1 = new TecnologiaResponseDto(3L, "Java", "c");
+        TecnologiaResponseDto dto2 = new TecnologiaResponseDto(4L, "Python", "d");
+
+        // Mockear los comportamientos
+        when(tecnologiaUseCase.consultarTodosPaginado())
+                .thenReturn(Flux.just(tecnologia1, tecnologia2));
+        when(tecnologiaModelMapper.toResponseFromModel(tecnologia1)).thenReturn(dto1);
+        when(tecnologiaModelMapper.toResponseFromModel(tecnologia2)).thenReturn(dto2);
+
+        // Ejecutar el metodo
+        Mono<TecnologiaPaginacionResponseDto<TecnologiaResponseDto>> result = tecnologiaService.consultarTodosPaginado(Mono.just(filterRequest));
+
+        // Verificar los resultados con StepVerifier
+        StepVerifier.create(result)
+                .expectNextMatches(response -> response.getContent().size() == 2 &&
+                        response.getContent().get(0).getNombre().equals("Java") &&
+                        response.getContent().get(1).getNombre().equals("Python") &&
+                        response.getPageNumber() == 0 &&
+                        response.getPageSize() == 2 &&
+                        response.getTotalElements() == 2)
                 .verifyComplete();
     }
 }

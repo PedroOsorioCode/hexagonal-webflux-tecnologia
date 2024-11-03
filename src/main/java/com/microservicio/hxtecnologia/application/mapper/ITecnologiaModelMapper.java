@@ -1,7 +1,7 @@
 package com.microservicio.hxtecnologia.application.mapper;
 
 import com.microservicio.hxtecnologia.application.dto.request.TecnologiaRequestDto;
-import com.microservicio.hxtecnologia.application.dto.request.TecnologiaResponseDto;
+import com.microservicio.hxtecnologia.application.dto.response.TecnologiaResponseDto;
 import com.microservicio.hxtecnologia.domain.model.TecnologiaModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;

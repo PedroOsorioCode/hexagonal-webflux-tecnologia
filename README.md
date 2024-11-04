@@ -10,7 +10,9 @@
 - Conexión: BD mysql
 - Test unitarios
 
-# Documentación
+# Validaciones
+
+- http://localhost:8080/swagger-ui/webjars/swagger-ui/index.html#/
 
 ---
 

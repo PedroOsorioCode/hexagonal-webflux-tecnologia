@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @PersistenceAdapter
 @RequiredArgsConstructor
 public class TecnologiaR2dbcAdapter implements ITecnologiaPersistencePort {
@@ -28,5 +30,10 @@ public class TecnologiaR2dbcAdapter implements ITecnologiaPersistencePort {
     @Override
     public Flux<TecnologiaModel> consultarTodos() {
         return tecnologiaRepository.findAll().map(tecnologiaEntityMapper::toModelFronEntity);
+    }
+
+    @Override
+    public Flux<TecnologiaModel> buscarTodosPorCodigo(List<Long> listaId) {
+        return tecnologiaRepository.findAllById(listaId).map(tecnologiaEntityMapper::toModelFronEntity);
     }
 }

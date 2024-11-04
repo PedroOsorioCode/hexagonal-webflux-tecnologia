@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @UseCase
 @RequiredArgsConstructor
 public class TecnologiaUseCase implements ITecnologiaUseCasePort {
@@ -25,5 +27,10 @@ public class TecnologiaUseCase implements ITecnologiaUseCasePort {
     @Override
     public Flux<TecnologiaModel> consultarTodosPaginado() {
         return tecnologiaPersistencePort.consultarTodos();
+    }
+
+    @Override
+    public Flux<TecnologiaModel> buscarTodosPorCodigo(List<Long> listaId) {
+        return tecnologiaPersistencePort.buscarTodosPorCodigo(listaId);
     }
 }

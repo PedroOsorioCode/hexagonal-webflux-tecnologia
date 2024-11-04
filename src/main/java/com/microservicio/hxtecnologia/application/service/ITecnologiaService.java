@@ -1,5 +1,6 @@
 package com.microservicio.hxtecnologia.application.service;
 
+import com.microservicio.hxtecnologia.application.dto.request.CapacidadTecnologiaRequestDto;
 import com.microservicio.hxtecnologia.application.dto.request.TecnologiaFilterRequestDto;
 import com.microservicio.hxtecnologia.application.dto.request.TecnologiaRequestDto;
 import com.microservicio.hxtecnologia.application.dto.response.TecnologiaPaginacionResponseDto;

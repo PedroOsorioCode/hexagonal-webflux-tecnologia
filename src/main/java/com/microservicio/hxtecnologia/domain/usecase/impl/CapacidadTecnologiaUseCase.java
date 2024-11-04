@@ -2,7 +2,6 @@ package com.microservicio.hxtecnologia.domain.usecase.impl;
 
 import com.microservicio.hxtecnologia.common.UseCase;
 import com.microservicio.hxtecnologia.domain.model.CapacidadTecnologiaModel;
-import com.microservicio.hxtecnologia.domain.model.TecnologiaModel;
 import com.microservicio.hxtecnologia.domain.serviceprovider.ICapacidadTecnologiaPersistencePort;
 import com.microservicio.hxtecnologia.domain.usecase.ICapacidadTecnologiaUseCasePort;
 import lombok.RequiredArgsConstructor;
@@ -17,5 +16,10 @@ public class CapacidadTecnologiaUseCase implements ICapacidadTecnologiaUseCasePo
     @Override
     public Flux<CapacidadTecnologiaModel> relacionarCapacidad(List<CapacidadTecnologiaModel> listaCapacidadTecnologiaModel) {
         return capacidadTecnologiaPersistencePort.relacionarCapacidad(listaCapacidadTecnologiaModel);
+    }
+
+    @Override
+    public Flux<CapacidadTecnologiaModel> consultarTecnologiaPorCapacidad(List<Long> listaCapacidades) {
+        return capacidadTecnologiaPersistencePort.consultarTecnologiaPorCapacidad(listaCapacidades);
     }
 }

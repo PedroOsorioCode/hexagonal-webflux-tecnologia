@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface ICapacidadTecnologiaPersistencePort {
     Flux<CapacidadTecnologiaModel> relacionarCapacidad(List<CapacidadTecnologiaModel> listaCapacidadTecnologiaModel);
-
+    Flux<CapacidadTecnologiaModel> consultarTecnologiaPorCapacidad(List<Long> listaCapacidades);
 }

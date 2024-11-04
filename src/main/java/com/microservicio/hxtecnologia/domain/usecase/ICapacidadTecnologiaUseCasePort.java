@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ICapacidadTecnologiaUseCasePort {
     Flux<CapacidadTecnologiaModel> relacionarCapacidad(List<CapacidadTecnologiaModel> listaCapacidadTecnologiaModel);
+    Flux<CapacidadTecnologiaModel> consultarTecnologiaPorCapacidad(List<Long> listaCapacidades);
 }

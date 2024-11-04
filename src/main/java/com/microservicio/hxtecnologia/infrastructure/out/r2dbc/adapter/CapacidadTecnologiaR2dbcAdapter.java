@@ -23,4 +23,10 @@ public class CapacidadTecnologiaR2dbcAdapter implements ICapacidadTecnologiaPers
         return capacidadTecnologiaRepository.saveAll(listaRelacion)
                 .map(capacidadTecnologiaEntityMapper::toModelFromEntity);
     }
+
+    @Override
+    public Flux<CapacidadTecnologiaModel> consultarTecnologiaPorCapacidad(List<Long> listaCapacidades) {
+        return capacidadTecnologiaRepository.findAllByIdCapacidadIn(listaCapacidades)
+                .map(capacidadTecnologiaEntityMapper::toModelFromEntity);
+    }
 }

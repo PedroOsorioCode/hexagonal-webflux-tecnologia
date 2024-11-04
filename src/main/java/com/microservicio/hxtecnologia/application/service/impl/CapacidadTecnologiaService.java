@@ -1,6 +1,7 @@
 package com.microservicio.hxtecnologia.application.service.impl;
 
 import com.microservicio.hxtecnologia.application.dto.request.CapacidadTecnologiaRequestDto;
+import com.microservicio.hxtecnologia.application.dto.response.CapacidadResponseDto;
 import com.microservicio.hxtecnologia.application.dto.response.TecnologiaResponseDto;
 import com.microservicio.hxtecnologia.application.mapper.ITecnologiaModelMapper;
 import com.microservicio.hxtecnologia.application.service.ICapacidadTecnologiaService;
@@ -17,6 +18,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,5 +49,54 @@ public class CapacidadTecnologiaService implements ICapacidadTecnologiaService {
                                 .map(tecnologiaModelMapper::toResponseFromModel);
                     });
         });
+    }
+
+    @Override
+    public Flux<CapacidadResponseDto> consultarCapacidadTecnologia(List<Long> listaCapacidades) {
+        Flux<CapacidadTecnologiaModel> capacidadTecnologiaModels = capacidadTecnologiaUseCasePort.consultarTecnologiaPorCapacidad(listaCapacidades);
+
+        List<CapacidadResponseDto> listaResponse = listaCapacidades.stream()
+                .map(CapacidadResponseDto::new).toList();
+
+        Flux<TecnologiaModel> tecnologias = capacidadTecnologiaModels
+                .map(CapacidadTecnologiaModel::getIdTecnologia)
+                .distinct()
+                .collectList()
+                .flatMapMany(tecnologiaUseCasePort::buscarTodosPorCodigo);
+
+        log.info("validando...");
+        //capacidadTecnologiaModels.doOnNext(data -> log.error(String.valueOf(data.getIdCapacidad()))).subscribe();
+
+        return tecnologias
+                .collectList()
+                .flatMapMany(listaTecnologias -> {
+                    // Mapeamos a un Map<Long, String> para obtener el nombre de cada tecnología
+                    Map<Long, String> tecnologiasMap = listaTecnologias.stream()
+                            .collect(Collectors.toMap(TecnologiaModel::getId, TecnologiaModel::getNombre));
+
+                    return capacidadTecnologiaModels
+                            .filter(capacidadTecnologia -> tecnologiasMap.containsKey(capacidadTecnologia.getIdTecnologia()))
+                            .groupBy(CapacidadTecnologiaModel::getIdCapacidad) // Agrupar por idCapacidad
+                            .flatMap(groupedFlux ->
+                                    groupedFlux.collectList().map(modelos -> {
+                                        Long idCapacidad = modelos.get(0).getIdCapacidad();
+                                        List<TecnologiaResponseDto> listaTecnologiasDto = modelos.stream()
+                                                .map(modelo -> new TecnologiaResponseDto(
+                                                        modelo.getIdTecnologia(),
+                                                        tecnologiasMap.get(modelo.getIdTecnologia())
+                                                ))
+                                                .toList();
+
+                                        // Buscar y actualizar la listaResponse con las tecnologías asociadas a cada capacidad
+                                        return listaResponse.stream()
+                                                .filter(capacidad -> capacidad.getId().equals(idCapacidad))
+                                                .peek(capacidad -> capacidad.setListaTecnologias(listaTecnologiasDto))
+                                                .findFirst()
+                                                .orElse(null);
+                                    })
+                            );
+                });
+
+        //return Flux.fromIterable(listaResponse);
     }
 }

@@ -11,4 +11,9 @@ public class TecnologiaResponseDto {
     private Long id;
     private String nombre;
     private String descripcion;
+
+    public TecnologiaResponseDto(Long idTecnologia, String nombre) {
+        this.id = idTecnologia;
+        this.nombre = nombre;
+    }
 }

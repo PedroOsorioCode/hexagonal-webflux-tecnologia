@@ -3,6 +3,7 @@ package com.microservicio.hxtecnologia.infrastructure.input.rest;
 import com.microservicio.hxtecnologia.application.dto.request.CapacidadTecnologiaRequestDto;
 import com.microservicio.hxtecnologia.application.dto.request.TecnologiaFilterRequestDto;
 import com.microservicio.hxtecnologia.application.dto.request.TecnologiaRequestDto;
+import com.microservicio.hxtecnologia.application.dto.response.CapacidadResponseDto;
 import com.microservicio.hxtecnologia.application.dto.response.TecnologiaPaginacionResponseDto;
 import com.microservicio.hxtecnologia.application.dto.response.TecnologiaResponseDto;
 import com.microservicio.hxtecnologia.application.service.ICapacidadTecnologiaService;
@@ -16,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/tecnologia")
@@ -58,15 +61,25 @@ public class TecnologiaController {
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Permite relacionar una capacidad con varias tecnologías")
+    @Operation(summary = "Permite relacionar una capacidad con varias tecnologías y obtener las tecnologias guardadas")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Informacion tecnologias", content = @Content),
-            @ApiResponse(responseCode = "409", description = "Inconsistencia en la información", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Informacion tecnologias", content = @Content)
     })
     @PostMapping("/relacionar-capacidad-tecnologia")
     public Flux<TecnologiaResponseDto> relacionarCapacidadTecnologia(
             @RequestBody Mono<CapacidadTecnologiaRequestDto> capacidadTecnologiaRequestDTO) {
 
         return capacidadTecnologiaService.relacionarConCapacidad(capacidadTecnologiaRequestDTO);
+    }
+
+    @Operation(summary = "Permite consultas las tecnologias relacionadas a varias capacidades")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Informacion tecnologias", content = @Content)
+    })
+    @PostMapping("/consultar-relacion-capacidad-tecnologia")
+    public Flux<CapacidadResponseDto> consultarCapacidadTecnologia(
+            @RequestBody List<Long> listaCapacidades) {
+
+        return capacidadTecnologiaService.consultarCapacidadTecnologia(listaCapacidades);
     }
 }

@@ -23,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/tecnologia")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class TecnologiaController {
     private final ITecnologiaService tecnologiaService;
     private final ICapacidadTecnologiaService capacidadTecnologiaService;

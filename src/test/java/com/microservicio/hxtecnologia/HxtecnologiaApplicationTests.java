@@ -8,6 +8,7 @@ class HxtecnologiaApplicationTests {
 
 	@Test
 	void contextLoads() {
+		//
 	}
 
 }

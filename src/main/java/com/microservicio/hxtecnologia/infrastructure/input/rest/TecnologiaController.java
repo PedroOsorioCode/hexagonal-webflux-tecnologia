@@ -45,11 +45,11 @@ public class TecnologiaController {
     @PostMapping
     public Mono<ResponseEntity<TecnologiaResponseDto>> guardar(@RequestBody Mono<TecnologiaRequestDto> tecnologiaRequestDto) {
         return tecnologiaService.guardar(tecnologiaRequestDto)
-                .map(tecnologiaModel -> ResponseEntity.ok(tecnologiaModel))
+                .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Permite consultas las tecnologias ordenadas por nombre y paginadas")
+    @Operation(summary = "Permite consultar las tecnologias ordenadas por nombre y paginadas")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Informacion tecnologias", content = @Content),
             @ApiResponse(responseCode = "409", description = "Inconsistencia en la información", content = @Content)
@@ -58,7 +58,7 @@ public class TecnologiaController {
     public Mono<ResponseEntity<TecnologiaPaginacionResponseDto<TecnologiaResponseDto>>> consultarTodos(
             @RequestBody Mono<TecnologiaFilterRequestDto> filter) {
         return tecnologiaService.consultarTodosPaginado(filter)
-                .map(tecnologiaModel -> ResponseEntity.ok(tecnologiaModel))
+                .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 

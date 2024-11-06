@@ -39,34 +39,32 @@ public class TecnologiaService implements ITecnologiaService {
     @Override
     public Mono<TecnologiaPaginacionResponseDto<TecnologiaResponseDto>>
         consultarTodosPaginado(Mono<TecnologiaFilterRequestDto> filter) {
-        return filter.flatMap(condicion -> {
-            return tecnologiaUseCasePort.consultarTodosPaginado()
-                .switchIfEmpty(Mono.empty())
-                .map(tecnologiaModelMapper::toResponseFromModel)
-                .sort(condicion.getDireccionOrdenamiento().toLowerCase()
-                        .equalsIgnoreCase(ConstantesAplicacion.METODO_ORDENAMIENTO_ASC)
-                        ? Comparator.comparing(TecnologiaResponseDto::getNombre)
-                        : Comparator.comparing(TecnologiaResponseDto::getNombre).reversed())
-                .collectList()
-                .flatMap(listaTecnologia -> {
-                    // Calcular la paginación
-                    int skip = condicion.getNumeroPagina() * condicion.getTamanoPorPagina();
-                    List<TecnologiaResponseDto> paginaTecnologias = listaTecnologia.stream()
-                            .skip(skip)
-                            .limit(condicion.getTamanoPorPagina())
-                            .toList();
+        return filter.flatMap(condicion -> tecnologiaUseCasePort.consultarTodosPaginado()
+            .switchIfEmpty(Mono.empty())
+            .map(tecnologiaModelMapper::toResponseFromModel)
+            .sort(condicion.getDireccionOrdenamiento().toLowerCase()
+                    .equalsIgnoreCase(ConstantesAplicacion.METODO_ORDENAMIENTO_ASC)
+                    ? Comparator.comparing(TecnologiaResponseDto::getNombre)
+                    : Comparator.comparing(TecnologiaResponseDto::getNombre).reversed())
+            .collectList()
+            .flatMap(listaTecnologia -> {
+                // Calcular la paginación
+                int skip = condicion.getNumeroPagina() * condicion.getTamanoPorPagina();
+                List<TecnologiaResponseDto> paginaTecnologias = listaTecnologia.stream()
+                        .skip(skip)
+                        .limit(condicion.getTamanoPorPagina())
+                        .toList();
 
-                    // Crear el objeto de respuesta paginada
-                    TecnologiaPaginacionResponseDto<TecnologiaResponseDto> response = new TecnologiaPaginacionResponseDto<>(
-                            paginaTecnologias,
-                            condicion.getNumeroPagina(),
-                            condicion.getTamanoPorPagina(),
-                            listaTecnologia.size()
-                    );
+                // Crear el objeto de respuesta paginada
+                TecnologiaPaginacionResponseDto<TecnologiaResponseDto> response = new TecnologiaPaginacionResponseDto<>(
+                        paginaTecnologias,
+                        condicion.getNumeroPagina(),
+                        condicion.getTamanoPorPagina(),
+                        listaTecnologia.size()
+                );
 
-                    return Mono.just(response);
-                });
-        });
+                return Mono.just(response);
+            }));
 
     }
 
@@ -75,11 +73,11 @@ public class TecnologiaService implements ITecnologiaService {
             String mensaje = "";
             if (req.getNombre().isEmpty())
                 mensaje = MensajeError.DATOS_OBLIGATORIOS.formato(ConstantesAplicacion.NOMBRE);
-            if (req.getDescripcion().isEmpty())
+            else if (req.getDescripcion().isEmpty())
                 mensaje = MensajeError.DATOS_OBLIGATORIOS.formato(ConstantesAplicacion.DESCRIPCION);
-            if (req.getNombre().length() > ConstantesAplicacion.MAX_NOMBRE)
+            else if (req.getNombre().length() > ConstantesAplicacion.MAX_NOMBRE)
                 mensaje = MensajeError.LONGITUD_PERMITIDA.formato(ConstantesAplicacion.NOMBRE, ConstantesAplicacion.MAX_NOMBRE);
-            if (req.getDescripcion().length() > ConstantesAplicacion.MAX_DESCRIPCION)
+            else if (req.getDescripcion().length() > ConstantesAplicacion.MAX_DESCRIPCION)
                 mensaje = MensajeError.LONGITUD_PERMITIDA.formato(ConstantesAplicacion.DESCRIPCION, ConstantesAplicacion.MAX_DESCRIPCION);
 
             if (!mensaje.isEmpty()) {
@@ -87,7 +85,7 @@ public class TecnologiaService implements ITecnologiaService {
             }
 
             return tecnologiaUseCasePort.existePorNombre(req.getNombre())
-                .flatMap(existe -> existe ?
+                .flatMap(existe -> Boolean.TRUE.equals(existe) ?
                     Mono.error(new RuntimeException(MensajeError.NOMBRE_DUPLICADO.getMensaje()))
                     : Mono.just(tecnologiaModelMapper.toModelFromRequest(req)));
         });

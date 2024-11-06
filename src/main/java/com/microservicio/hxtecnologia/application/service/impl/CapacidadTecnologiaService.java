@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -43,11 +42,10 @@ public class CapacidadTecnologiaService implements ICapacidadTecnologiaService {
             return capacidadTecnologiaUseCasePort.relacionarCapacidad(relacion)
                     .map(CapacidadTecnologiaModel::getIdTecnologia)
                     .collectList()
-                    .flatMapMany(listaTecnologia -> {
-                        // Llama a buscarTodosPorCodigo usando la lista completa de IDs
-                        return tecnologiaUseCasePort.buscarTodosPorCodigo(listaTecnologia)
-                                .map(tecnologiaModelMapper::toResponseFromModel);
-                    });
+                    .flatMapMany(listaTecnologia ->
+                            tecnologiaUseCasePort.buscarTodosPorCodigo(listaTecnologia)
+                                .map(tecnologiaModelMapper::toResponseFromModel)
+                    );
         });
     }
 
@@ -63,9 +61,6 @@ public class CapacidadTecnologiaService implements ICapacidadTecnologiaService {
                 .distinct()
                 .collectList()
                 .flatMapMany(tecnologiaUseCasePort::buscarTodosPorCodigo);
-
-        log.info("validando...");
-        //capacidadTecnologiaModels.doOnNext(data -> log.error(String.valueOf(data.getIdCapacidad()))).subscribe();
 
         return tecnologias
                 .collectList()
@@ -96,7 +91,5 @@ public class CapacidadTecnologiaService implements ICapacidadTecnologiaService {
                                     })
                             );
                 });
-
-        //return Flux.fromIterable(listaResponse);
     }
 }

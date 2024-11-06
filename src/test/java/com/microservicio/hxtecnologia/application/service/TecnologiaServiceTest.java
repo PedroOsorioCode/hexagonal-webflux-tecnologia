@@ -22,7 +22,7 @@ import reactor.test.StepVerifier;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class TecnologiaServiceTest {
+class TecnologiaServiceTest {
     @InjectMocks
     private TecnologiaService tecnologiaService;
     @Mock
@@ -35,7 +35,7 @@ public class TecnologiaServiceTest {
         MockitoAnnotations.openMocks(this); // Inicializa los mocks
     }
 
-    @Test public void testValidarGuardarNombreVacio() {
+    @Test void testValidarGuardarNombreVacio() {
         TecnologiaRequestDto requestDto = new TecnologiaRequestDto();
         requestDto.setNombre("");
         requestDto.setDescripcion("Descripción");
@@ -49,7 +49,7 @@ public class TecnologiaServiceTest {
     }
 
     @Test
-    public void testValidarGuardarDescripcionVacia() {
+    void testValidarGuardarDescripcionVacia() {
         TecnologiaRequestDto requestDto = new TecnologiaRequestDto();
         requestDto.setNombre("Tecnologia");
         requestDto.setDescripcion("");
@@ -63,7 +63,7 @@ public class TecnologiaServiceTest {
     }
 
     @Test
-    public void testValidarGuardarNombreLargo() {
+    void testValidarGuardarNombreLargo() {
         TecnologiaRequestDto requestDto = new TecnologiaRequestDto();
         requestDto.setNombre(String.format("%-51s", "Texto").replace(' ', 'a'));
         requestDto.setDescripcion("Descripción");
@@ -77,7 +77,7 @@ public class TecnologiaServiceTest {
     }
 
     @Test
-    public void testValidarGuardarDescripcionLarga() {
+    void testValidarGuardarDescripcionLarga() {
         TecnologiaRequestDto requestDto = new TecnologiaRequestDto();
         requestDto.setNombre("Tecnologia");
         requestDto.setDescripcion(String.format("%-91s", "Texto").replace(' ', 'a')); // Excede la longitud
@@ -91,7 +91,7 @@ public class TecnologiaServiceTest {
     }
 
     @Test
-    public void testValidarGuardarNombreDuplicado() {
+    void testValidarGuardarNombreDuplicado() {
         // Crear instancias de request y model para simular la transformación
         TecnologiaRequestDto requestDto = new TecnologiaRequestDto();
         requestDto.setNombre("NombrePrueba");
@@ -115,7 +115,7 @@ public class TecnologiaServiceTest {
     }
 
     @Test
-    public void testGuardarCasoExitoso() {
+    void testGuardarCasoExitoso() {
         // Crear instancias de request y model para simular la transformación
         TecnologiaRequestDto requestDto = new TecnologiaRequestDto();
         requestDto.setNombre("NombrePrueba");

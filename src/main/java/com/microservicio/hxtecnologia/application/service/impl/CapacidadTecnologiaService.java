@@ -85,7 +85,10 @@ public class CapacidadTecnologiaService implements ICapacidadTecnologiaService {
                                         // Buscar y actualizar la listaResponse con las tecnologías asociadas a cada capacidad
                                         return listaResponse.stream()
                                                 .filter(capacidad -> capacidad.getId().equals(idCapacidad))
-                                                .peek(capacidad -> capacidad.setListaTecnologias(listaTecnologiasDto))
+                                                .map(capacidad -> {
+                                                    capacidad.setListaTecnologias(listaTecnologiasDto);
+                                                    return capacidad;
+                                                })
                                                 .findFirst()
                                                 .orElse(null);
                                     })

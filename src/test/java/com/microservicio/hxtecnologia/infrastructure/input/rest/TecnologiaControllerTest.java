@@ -4,7 +4,6 @@ import com.microservicio.hxtecnologia.application.dto.request.TecnologiaFilterRe
 import com.microservicio.hxtecnologia.application.dto.request.TecnologiaRequestDto;
 import com.microservicio.hxtecnologia.application.dto.response.TecnologiaPaginacionResponseDto;
 import com.microservicio.hxtecnologia.application.dto.response.TecnologiaResponseDto;
-import com.microservicio.hxtecnologia.application.service.ICapacidadTecnologiaService;
 import com.microservicio.hxtecnologia.application.service.impl.CapacidadTecnologiaService;
 import com.microservicio.hxtecnologia.application.service.impl.TecnologiaService;
 import org.junit.jupiter.api.Test;
